@@ -1,0 +1,36 @@
+{
+  "name": "pettycash",
+  "version": "1.0.0",
+  "description": "Petty cash management app with PostgreSQL and Drizzle",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "check": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.1.0",
+    "@types/node": "^25.5.0",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1015.0",
+    "@aws-sdk/s3-request-presigner": "^3.1015.0",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "postgres": "^3.4.8"
+  }
+}
