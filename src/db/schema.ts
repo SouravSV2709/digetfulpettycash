@@ -13,6 +13,7 @@ const timestamps = {
 export const transactions = t.pgTable("transactions", {
   id: t.serial("id").primaryKey(),
   transactionCode: t.varchar("transaction_code", { length: 20 }).unique(),
+  transactionDate: t.date("transaction_date"),
   type: t.varchar("type", { length: 10 }).notNull(),
   description: t.varchar("description", { length: 255 }).notNull(),
   amount: t.numeric("amount", { precision: 12, scale: 2 }).notNull(),

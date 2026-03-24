@@ -42,6 +42,7 @@ app.post("/api/transactions", upload.single("receipt"), async (req, res, next) =
     const [inserted] = await db
       .insert(transactions)
       .values({
+        transactionDate: payload.transactionDate,
         type: payload.type,
         description: payload.description,
         amount: payload.amount,
@@ -92,6 +93,7 @@ app.put("/api/transactions/:id", upload.single("receipt"), async (req, res, next
     await db
       .update(transactions)
       .set({
+        transactionDate: payload.transactionDate,
         type: payload.type,
         description: payload.description,
         amount: payload.amount,
@@ -173,7 +175,7 @@ app.use((_req, res) => {
   res.sendFile(path.join(publicDir, "index.html"));
 });
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Petty cash app listening on http://localhost:${port}`);
 });
 
@@ -186,7 +188,10 @@ async function getBootstrapPayload() {
 }
 
 async function listTransactions() {
-  const rows = await db.select().from(transactions).orderBy(desc(transactions.id));
+  const rows = await db
+    .select()
+    .from(transactions)
+    .orderBy(desc(transactions.transactionDate), desc(transactions.id));
   return rows.map(serializeTransaction);
 }
 
@@ -228,6 +233,7 @@ function serializeTransaction(row: typeof transactions.$inferSelect) {
   return {
     dbId: row.id,
     id: row.transactionCode || formatTransactionCode(row.id),
+    transactionDate: row.transactionDate || "",
     type: row.type,
     description: row.description,
     amount: Number(row.amount),
@@ -239,6 +245,11 @@ function serializeTransaction(row: typeof transactions.$inferSelect) {
 }
 
 function readTransactionPayload(req: Request) {
+  const transactionDate = String(req.body.transactionDate || "").trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(transactionDate)) {
+    throw new Error("Transaction date is required.");
+  }
+
   const type = String(req.body.type || "").trim().toLowerCase();
   if (type !== "credit" && type !== "debit") {
     throw new Error("Transaction type must be debit or credit.");
@@ -260,6 +271,7 @@ function readTransactionPayload(req: Request) {
   }
 
   return {
+    transactionDate,
     type,
     description,
     amount: amount.toFixed(2),

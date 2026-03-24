@@ -57,6 +57,11 @@
             <input id="transactionDisplayId" type="text" readonly placeholder="Generated on save">
           </label>
 
+          <label>
+            Transaction Date
+            <input id="transactionDate" type="date" required>
+          </label>
+
           <label class="full-width">
             Description
             <input id="description" type="text" maxlength="120" required placeholder="Enter transaction description">
@@ -108,6 +113,7 @@
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Date</th>
                 <th>Type</th>
                 <th>Description</th>
                 <th>Amount</th>
@@ -126,7 +132,7 @@
 
   <template id="emptyStateTemplate">
     <tr>
-      <td colspan="8" class="empty-state">No transactions added yet.</td>
+      <td colspan="9" class="empty-state">No transactions added yet.</td>
     </tr>
   </template>
 

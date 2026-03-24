@@ -12,6 +12,7 @@ const pageMessage = document.getElementById("pageMessage");
 const editTransactionId = document.getElementById("editTransactionId");
 const transactionType = document.getElementById("transactionType");
 const transactionDisplayId = document.getElementById("transactionDisplayId");
+const transactionDate = document.getElementById("transactionDate");
 const description = document.getElementById("description");
 const amount = document.getElementById("amount");
 const updatedBy = document.getElementById("updatedBy");
@@ -67,6 +68,7 @@ function renderTable() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td data-label="ID">${transaction.id}</td>
+      <td data-label="Date">${formatDate(transaction.transactionDate)}</td>
       <td data-label="Type"><span class="badge ${transaction.type}">${capitalize(transaction.type)}</span></td>
       <td data-label="Description">${escapeHtml(transaction.description)}</td>
       <td data-label="Amount">${formatCurrency(transaction.amount)}</td>
@@ -107,6 +109,7 @@ async function onSubmit(event) {
 
   try {
     const formData = new FormData();
+    formData.set("transactionDate", transactionDate.value);
     formData.set("type", transactionType.value);
     formData.set("description", description.value.trim());
     formData.set("amount", amount.value);
@@ -184,6 +187,7 @@ function populateForm(transaction) {
   cancelEditButton.classList.remove("hidden");
   editTransactionId.value = transaction.dbId;
   transactionDisplayId.value = transaction.id;
+  transactionDate.value = transaction.transactionDate || "";
   transactionType.value = transaction.type;
   description.value = transaction.description;
   amount.value = transaction.amount;
@@ -200,6 +204,7 @@ function resetForm() {
   cancelEditButton.classList.add("hidden");
   transactionType.value = "credit";
   transactionDisplayId.value = state.nextTransactionCode || "Generated on save";
+  transactionDate.value = getTodayDate();
   hideDetailsPanel();
   clearMessages();
 }
@@ -212,6 +217,7 @@ function startNewTransaction() {
   cancelEditButton.classList.add("hidden");
   transactionType.value = "credit";
   transactionDisplayId.value = state.nextTransactionCode || "Generated on save";
+  transactionDate.value = getTodayDate();
   showDetailsPanel();
   description.focus();
   clearMessages();
@@ -272,6 +278,27 @@ function formatCurrency(value) {
     currency: "INR",
     minimumFractionDigits: 2,
   }).format(Number(value) || 0);
+}
+
+function formatDate(value) {
+  if (!value) {
+    return "-";
+  }
+
+  const parsed = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(parsed);
+}
+
+function getTodayDate() {
+  return new Date().toISOString().slice(0, 10);
 }
 
 function capitalize(value) {
