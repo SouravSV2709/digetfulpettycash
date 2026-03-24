@@ -387,11 +387,12 @@ th {
 
   td {
     display: grid;
-    grid-template-columns: minmax(90px, 110px) 1fr;
+    grid-template-columns: minmax(90px, 110px) minmax(0, 1fr);
     gap: 10px;
     padding: 10px 0;
     border-top: 0;
     align-items: center;
+    min-width: 0;
   }
 
   td::before {
@@ -401,6 +402,19 @@ th {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
+  }
+
+  td > * {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .badge,
+  .receipt-link {
+    width: fit-content;
+    max-width: 100%;
   }
 
   .table-actions {

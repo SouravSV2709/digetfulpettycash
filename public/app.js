@@ -157,6 +157,13 @@ async function onTableAction(event) {
     return;
   }
 
+  const shouldDelete = window.confirm(
+    `Delete transaction ${transaction.id}? This will remove the entry${transaction.receiptName ? " and its receipt link" : ""}.`
+  );
+  if (!shouldDelete) {
+    return;
+  }
+
   clearMessages();
 
   try {
